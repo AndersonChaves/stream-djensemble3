@@ -1,0 +1,57 @@
+{   
+    "skip_list": [], 
+    "djensemble" : {
+        "A": {
+            "window_size": 730,
+            "time_start": 0,
+            "time_end": 7300,  
+            "query":{
+                "start": [0, 0],
+                "end": [10, 10]
+            },
+            "data_source": {
+                "dataset": "data/CFSR-2010-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 7300],
+                "compacting_factor": 3
+            },
+            "clustering":{                
+                "embedding_method": "parcorr4",
+                "type": "static",
+                "cluster_query_window": "yes",
+                "pre_clustering_window_size": 730
+            },
+            "tiling": {
+                "strategy": "yolo",
+                "min_purity_rate": 0.9         
+            },
+            "models": {
+                "convolutional_models_path": "models/single-model-for-tests/SPT/",
+                "temporal_models_path": "models/single-model-for-tests/Temporal/",
+                "cost_estimation_function": {
+                    "noise_level": 50,
+                    "always_update": false
+                }                
+            }
+        }
+    },
+    "tests": {
+        "runner_test": {
+            "temporal_model_path": "models/single-model-for-tests/Temporal/",
+            "temporal_model_name": "CFSR-2014.nc-x0=(1, 1)-1x1-summer",
+            "spt_model_path": "models/single-model-for-tests/SPT/",
+            "spt_model": "CFSR-2014.nc-x0=(3, 3)-3x3-('2014-01-01 00:00:00', '2014-03-30 23:45:00')-summer",
+            "query":{
+                "start": [0, 0],
+                "end": [10, 10]
+            }
+        }        
+    }
+
+}        
