@@ -3,7 +3,7 @@ from models.models_manager import ModelsManager
 from models.learner import UnidimensionalLearner
 from tiling.tiling import Tile
 from unittest.mock import Mock
-from config.config import Config
+from core.config import Config
 import numpy as np
 import sys, os
 

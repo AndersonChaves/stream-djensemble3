@@ -1,6 +1,6 @@
-import tests.utils as utils
 import unittest
-from config.config import Config
+import tests.utils as utils
+from core.config import Config
 from query.ensemble_runner import EnsembleRunner
 
 class TestRunner(unittest.TestCase):

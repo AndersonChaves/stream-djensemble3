@@ -1,10 +1,11 @@
-
 *.pyc
 bin/*
 images/*
 include/*
 lib/*
+lib64
 lib64/*
 share/*
 pyvenv.cfg
- 
+resources/data/*
+resources/models/*
