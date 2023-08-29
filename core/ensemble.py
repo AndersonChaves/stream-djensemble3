@@ -1,7 +1,7 @@
 import numpy as np
-from models.learner import Learner
+from core.models.learner import Learner
 import logging
-from tiling.tile import Tile
+from core.tiling.tile import Tile
 import sys, os
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)

@@ -1,0 +1,10 @@
+
+*.pyc
+bin/*
+images/*
+include/*
+lib/*
+lib64/*
+share/*
+pyvenv.cfg
+ 

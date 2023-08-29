@@ -1,8 +1,8 @@
-from data.dataset_manager import DatasetManager
-from query.continuous_query import ContinuousQuery
+from core.data.dataset_manager import DatasetManager
+from core.query.continuous_query import ContinuousQuery
 import logging
 import core.utils as ut
-from models.models_manager import ModelsManager
+from core.models.models_manager import ModelsManager
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
