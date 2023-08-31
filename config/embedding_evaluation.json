@@ -1,0 +1,79 @@
+{    
+    "clustering": {
+        "A":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+            "type": "static",
+            "embedding_method": "gld"
+        },
+        "B":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+            "type": "static",
+            "embedding_method": "parcorr4"
+        },
+        "C":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+            "type": "static",
+            "embedding_method": "parcorr6"
+        },
+        "D":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+	    "type": "static",
+            "embedding_method": "parcorr8"
+        },
+        "E":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+            "type": "static",
+            "embedding_method": "parcorr10"
+        }
+    }   
+}

@@ -1,0 +1,24 @@
+{    
+    "clustering_through_time" : {
+        "B": {
+            "clustering":{
+                "data_source": {
+                    "dataset": "data/CFSR-2015.nc",
+                    "target_attribute": "TMP_L100",
+                    "subregion": {
+                        "lat_min": 0,
+                        "lat_max": 100,
+                        "lon_min": 0,
+                        "lon_max": 100
+                    },
+                    "time_range": [0, 1460]
+                },        
+                "embedding_method": "parcorr4"
+            },
+            "type": "dynamic",
+            "window_size": 50,
+            "time_start": 0,
+            "time_end": 1460
+        }
+    }
+}
