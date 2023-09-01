@@ -65,7 +65,7 @@ class StaticClustering():
         self._embedding_matrix = self.embedding_strategy.iterate(self.target_dataset)        
         self._embedding_time = time.time() - start
     
-    def _cluster(self, min_clusters=2):        
+    def _cluster(self, min_clusters=3):        
         start = time.time()
         best_silhouete = -2
         kmeans_best_clustering = [0 for _ in range(len(self._embedding_matrix))]
@@ -117,6 +117,6 @@ class StaticClustering():
         if not self.clustering_done:
             raise Exception("Error - Clustering has not been performed")
               
-    def save_clustering_matrix(self, base_directory):
+    def save_clustering_matrix(self, base_directory, file_name):
         self._check_clustering()
-        np.save(f"{base_directory}/clustering.npy", self._clustering_matrix)
+        np.save(f"{base_directory}/{file_name}.npy", self._clustering_matrix)
