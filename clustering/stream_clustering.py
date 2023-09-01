@@ -3,6 +3,7 @@ import clustering.embedding as embedding
 from sklearn.cluster import Birch
 from sklearn.metrics import silhouette_score
 import logging
+import core.view as view
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -29,6 +30,11 @@ class StreamClustering():
 
         silhouette = silhouette_score(self.emb_list, self.clustering)
         return silhouette
+
+    def save_clustering_image(self, file_dir, file_name):
+        if file_dir[-1] != "/":
+            file_dir += "/"
+        view.save_figure_from_matrix(self.clustering_matrix, file_dir, file_name)
 
     @property
     def embedding_time(self):

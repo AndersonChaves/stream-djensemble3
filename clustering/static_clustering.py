@@ -7,6 +7,7 @@ import time
 from config.config import Config
 import warnings
 import sys, os
+import core.view as view
 
 class StaticClustering():
     def __init__(self, config):        
@@ -34,6 +35,11 @@ class StaticClustering():
         stats += f"total time: {self.embedding_time + self.clustering_time} \n"
         stats += f"clustering silhouette: {self.silhouette} \n"
         return stats
+
+    def save_clustering_image(self, file_dir, file_name):
+        if file_dir[-1] != "/":
+            file_dir += "/"
+        view.save_figure_from_matrix(self.clustering_matrix, file_dir, file_name)
 
     def _read_target_dataset(self):
         self.ds_manager = DatasetManager(self.config["data_source"])

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
+from core.utils import create_directory_if_not_exists
 
 def print_array_screen(array_list, title_list = None, cmap_list=None):
     if isinstance(array_list, list):
@@ -22,33 +23,9 @@ def print_array_screen(array_list, title_list = None, cmap_list=None):
 
 def save_figure_from_matrix(matrix : np.array, parent_directory: str, 
                             title: str, write_values=False,font_size=5):
-    matplotlib.use('TkAgg')
-    if write_values:
-        matplotlib.rcParams.update({'font.size': font_size})
-    fig, ax = plt.subplots()
-
-
-    if write_values:
-        for i in range(matrix.shape[0]):
-            for j in range(matrix.shape[1]):
-                c = round(matrix[i, j], 1)
-                ax.text(i+0.5, j+0.5, str(c), va='center', ha='center')
-                # print("I, J: ", i, ' ', j)
-
-    plt.matshow(matrix, cmap=plt.cm.Blues)
-    min_val_lin, max_val_lin = 0, matrix.shape[0]
-    min_val_col, max_val_col = 0, matrix.shape[1]
-
-    ax.set_xlim(min_val_lin, max_val_lin)
-    ax.set_ylim(min_val_col, max_val_col)
-    ax.set_xticks(np.arange(max_val_lin))
-    ax.set_yticks(np.arange(max_val_col))
-
-    fig.tight_layout()
-    ax.grid()
-    fig.savefig(parent_directory + title + '.png', dpi=160)
-    #plt.pause(1)
-    plt.close("all")
+    create_directory_if_not_exists(parent_directory)
+    matplotlib.image.imsave(parent_directory + title + ".jpg", matrix)    
+    return
 
 def plot_graph_line(error_history, title: str,
                    parent_directory='', write_values=False):
