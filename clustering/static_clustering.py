@@ -69,7 +69,7 @@ class StaticClustering():
         start = time.time()
         best_silhouete = -2
         kmeans_best_clustering = [0 for _ in range(len(self._embedding_matrix))]
-        for number_of_clusters in range(min_clusters, 5+1):
+        for number_of_clusters in range(min_clusters, 3+1):
             kmeans = KMeans(n_clusters=number_of_clusters, random_state=0)
             kmeans_labels = kmeans.fit_predict(self._embedding_matrix)
             silhouette_avg = silhouette_score(self._embedding_matrix, kmeans_labels)
