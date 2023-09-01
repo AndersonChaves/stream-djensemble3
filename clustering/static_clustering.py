@@ -17,6 +17,7 @@ class StaticClustering():
         self.embedding_strategy = create_embedding_strategy(
             self.target_dataset, self.embedding_method)        
         self._initialize_parameters()
+        self.use_cache = False
         
     def run(self):
         if self.clustering_done:
@@ -62,14 +63,22 @@ class StaticClustering():
 
     def _calculate_embedding(self):
         start = time.time()
-        self._embedding_matrix = self.embedding_strategy.iterate(self.target_dataset)        
+        file_name = f"{self.config['embedding_method']}t{self.config['data_source']['time_range']}"
+        if ut.file_exists(f"embedding/{file_name}") and self.use_cache:
+            logger.debug("Loading embedding from cache")
+            self._embedding_matrix = np.load(f"embedding/{file_name}")   
+        else: 
+            logger.debug("Generating embedding")
+            self._embedding_matrix = self.embedding_strategy.iterate(self.target_dataset)        
+            ut.create_directory_if_not_exists("embedding")
+            np.save(f"embedding/{file_name}", self._embedding_matrix)
         self._embedding_time = time.time() - start
     
     def _cluster(self, min_clusters=3):        
         start = time.time()
         best_silhouete = -2
         kmeans_best_clustering = [0 for _ in range(len(self._embedding_matrix))]
-        for number_of_clusters in range(min_clusters, 3+1):
+        for number_of_clusters in range(min_clusters, 5+1):
             kmeans = KMeans(n_clusters=number_of_clusters, random_state=0)
             kmeans_labels = kmeans.fit_predict(self._embedding_matrix)
             silhouette_avg = silhouette_score(self._embedding_matrix, kmeans_labels)
@@ -116,7 +125,11 @@ class StaticClustering():
     def _check_clustering(self):
         if not self.clustering_done:
             raise Exception("Error - Clustering has not been performed")
-              
+
+    def save_embedding_matrix(self, base_directory, file_name):
+        self._check_clustering()
+        np.save(f"{base_directory}/{file_name}.emb.npy", self._embedding_matrix)
+
     def save_clustering_matrix(self, base_directory, file_name):
         self._check_clustering()
         np.save(f"{base_directory}/{file_name}.npy", self._clustering_matrix)

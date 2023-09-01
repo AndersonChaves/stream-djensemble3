@@ -9,6 +9,7 @@ if __name__ == "__main__":
     for key, cls_configuration in config.data["clustering"].items():
         static_clustering = StaticClustering(cls_configuration)
         static_clustering.run()
-        static_clustering.save_clustering_image("output/images/", 
-            f"{cls_configuration['embedding_method']}t{cls_configuration['data_source']['time_range']}")
+        file_name = f"{cls_configuration['embedding_method']}t{cls_configuration['data_source']['time_range']}"
+        static_clustering.save_clustering_image("output/images/", file_name)
+        #static_clustering.save_clustering_matrix("embedding/", file_name)
         print(static_clustering.get_statistics())
