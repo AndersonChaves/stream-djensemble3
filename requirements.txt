@@ -5,3 +5,4 @@ matplotlib==3.7.2
 netCDF4==1.6.4
 h5py==3.9.0
 xarray==2023.7.0
+tinydb==4.8.0

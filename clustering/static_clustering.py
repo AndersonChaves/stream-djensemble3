@@ -9,6 +9,10 @@ import warnings
 import sys, os
 import core.view as view
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+
 class StaticClustering():
     def __init__(self, config):        
         self.config = config
@@ -17,6 +21,7 @@ class StaticClustering():
         self.embedding_strategy = create_embedding_strategy(
             self.target_dataset, self.embedding_method)        
         self._initialize_parameters()
+        self.it_number = 1
         self.use_cache = False
         
     def run(self):
@@ -42,6 +47,10 @@ class StaticClustering():
             file_dir += "/"
         view.save_figure_from_matrix(self.clustering_matrix, file_dir, file_name)
 
+    def set_cache(self, it_number:int):
+        self.use_cache = True
+        self.it_number = it_number
+
     def _read_target_dataset(self):
         self.ds_manager = DatasetManager(self.config["data_source"])
         self.ds_manager.loadDataset()
@@ -63,15 +72,17 @@ class StaticClustering():
 
     def _calculate_embedding(self):
         start = time.time()
-        file_name = f"{self.config['embedding_method']}t{self.config['data_source']['time_range']}"
-        if ut.file_exists(f"embedding/{file_name}") and self.use_cache:
+        file_name = f"{self.config['embedding_method']}t{self.config['data_source']['time_range']}.{self.it_number}.emb.npy"
+        dir_name = "cache/embedding/"
+        full_file_name = dir_name + file_name
+        if ut.file_exists(full_file_name) and self.use_cache:
             logger.debug("Loading embedding from cache")
-            self._embedding_matrix = np.load(f"embedding/{file_name}")   
+            self._embedding_matrix = np.load(full_file_name)   
         else: 
             logger.debug("Generating embedding")
             self._embedding_matrix = self.embedding_strategy.iterate(self.target_dataset)        
-            ut.create_directory_if_not_exists("embedding")
-            np.save(f"embedding/{file_name}", self._embedding_matrix)
+            ut.create_directory_if_not_exists(dir_name)
+            np.save(full_file_name, self._embedding_matrix)
         self._embedding_time = time.time() - start
     
     def _cluster(self, min_clusters=3):        

@@ -3,6 +3,9 @@ import core.utils as ut
 from clustering.gld import *
 from clustering.parcorr import *
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 def create_embedding_strategy(data, embedding_strategy_name):
     if embedding_strategy_name == "gld":
         return GldStrategy()
