@@ -7,6 +7,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
+
 config_file = "embedding_evaluation.json"
 number_of_runs = 2
 
@@ -20,6 +21,17 @@ def run_experiment(config, it_number):
         
         with open(f'r{it_number+1}.out', 'w') as f:
             f.write(static_clustering.get_statistics())
+
+        db = TinyDB('db.json')
+        exp1 = db.table('EXP1')
+        exp1.insert({
+        'iteration': it_number,
+        'embedding': static_clustering.embedding_method,
+        'number_of_clusters' 
+        'embeddingTime': static_clustering.embedding_time,
+        'clusteringTime': static_clustering.clustering_time,
+        'silhouette': static_clustering.silhouette})
+        
 
 
 if __name__ == "__main__":    
