@@ -96,6 +96,7 @@ class StaticClustering():
             if silhouette_avg > best_silhouete:
                 kmeans_best_clustering = kmeans_labels
                 best_silhouete = silhouette_avg
+                self.number_of_clusters = number_of_clusters
         self._clustering_time = time.time() - start
         self._clustering_matrix = kmeans_best_clustering
         self._silhouette = best_silhouete
