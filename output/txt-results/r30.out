@@ -1,0 +1,25 @@
+Clustering: gld 
+embedding time: 0.0009760856628417969 
+clustering time: 26.33992576599121 
+total time: 26.340901851654053 
+clustering silhouette: 0.9615942144502507 
+Clustering: parcorr4 
+embedding time: 0.0009255409240722656 
+clustering time: 26.50011134147644 
+total time: 26.501036882400513 
+clustering silhouette: 0.46697759833649805 
+Clustering: parcorr6 
+embedding time: 0.0009450912475585938 
+clustering time: 24.64821696281433 
+total time: 24.64916205406189 
+clustering silhouette: 0.4403325449743837 
+Clustering: parcorr8 
+embedding time: 0.0011234283447265625 
+clustering time: 25.363191604614258 
+total time: 25.364315032958984 
+clustering silhouette: 0.5117775719768615 
+Clustering: parcorr2 
+embedding time: 0.0007729530334472656 
+clustering time: 25.313241481781006 
+total time: 25.314014434814453 
+clustering silhouette: 0.49226287364657145 
