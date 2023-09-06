@@ -1,0 +1,68 @@
+{   
+    "skip_list": [], 
+    "clustering_through_time" : {
+        "A": {
+            "clustering":{
+                "data_source": {
+                    "dataset": "data/CFSR-2015.nc",
+                    "target_attribute": "TMP_L100",
+                    "subregion": {
+                        "lat_min": 0,
+                        "lat_max": 141,
+                        "lon_min": 0,
+                        "lon_max": 153
+                    },
+                    "time_range": [0, 1460],
+                    "compacting_factor": 3
+                },        
+                "embedding_method": "parcorr4"
+            },
+            "type": "static",
+            "window_size": 112,
+            "time_start": 0,
+            "time_end": 1460
+        },
+        "B": {
+            "clustering":{
+                "data_source": {
+                    "dataset": "data/CFSR-2015.nc",
+                    "target_attribute": "TMP_L100",
+                    "subregion": {
+                        "lat_min": 0,
+                        "lat_max": 141,
+                        "lon_min": 0,
+                        "lon_max": 153
+                    },
+                    "time_range": [0, 1460],
+                    "compacting_factor": 3
+                },        
+                "embedding_method": "parcorr4"
+            },
+            "type": "dynamic",
+            "window_size": 112,
+            "time_start": 0,
+            "time_end": 1460
+        },
+        "C": {
+            "clustering":{
+                "data_source": {
+                    "dataset": "data/CFSR-2015.nc",
+                    "target_attribute": "TMP_L100",
+                    "subregion": {
+                        "lat_min": 0,
+                        "lat_max": 141,
+                        "lon_min": 0,
+                        "lon_max": 153
+                    },
+                    "time_range": [0, 1460],
+                    "compacting_factor": 3
+                },        
+                "embedding_method": "parcorr4"
+            },
+            "type": "stream",
+            "window_size": 112,
+            "time_start": 0,
+            "time_end": 1460
+        }
+    }
+}
