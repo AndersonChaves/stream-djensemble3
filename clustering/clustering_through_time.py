@@ -24,6 +24,7 @@ class ClusteringThroughTime():
         self.stream_clustering = None
         self.embedding_method = self.config["clustering"]["embedding_method"]
         self.window_size = self.config["window_size"]
+        self.n_clusters = self.config["n_clusters"]
 
     def run(self):
         self.time_start = time.time()
@@ -51,6 +52,8 @@ class ClusteringThroughTime():
             self.silhouette_history.append(silhouette)
         self.time_end = time.time()
         self.experiment_complete = True
+        self.average_silhouette = mean(self.silhouette_history)
+        self.average_silhouette_2nd_half = mean(self.silhouette_history[int(len(self.silhouette_history)/2):])
 
     def load_dataset(self, start, end):
         self.ds = DatasetManager(self.config["clustering"]["data_source"])
@@ -61,7 +64,8 @@ class ClusteringThroughTime():
         self.load_dataset(t, t+step)
         data = self.ds.read_all_data()
         if self.static_clustering is None:
-            self.static_clustering = StaticClustering(data, self.embedding_method)
+            self.static_clustering = StaticClustering(data, 
+                self.embedding_method, n_clusters=self.config["n_clusters"])
             self.static_clustering.run()
         else:
             self.static_clustering.predict(data)     
@@ -72,7 +76,8 @@ class ClusteringThroughTime():
     def perform_dynamic_clustering(self, t, step):
         self.load_dataset(t, t+step)
         data = self.ds.read_all_data()
-        self.dynamic_clustering = StaticClustering(data, self.embedding_method)
+        self.dynamic_clustering = StaticClustering(data, self.embedding_method, 
+            n_clusters=self.config["n_clusters"])
         self.dynamic_clustering.run()
         if t % 10 == 0:               
             self.dynamic_clustering.save_clustering_image(f"images/dynamic/{self.embedding_method}/w={self.window_size}", f"{t}-{t+step}")
@@ -82,7 +87,8 @@ class ClusteringThroughTime():
         self.load_dataset(t, t+step)
         data = self.ds.read_all_data()
         if self.stream_clustering is None:
-            self.stream_clustering = StreamClustering(self.embedding_method)
+            self.stream_clustering = StreamClustering(self.embedding_method, 
+                n_clusters=self.config["n_clusters"])
             self.stream_clustering.initialize_clustering(data)
         else:
             self.stream_clustering.update_clustering(data)
@@ -102,6 +108,8 @@ class ClusteringThroughTime():
         stats = f"total time: {self.time_end - self.time_start} \n"
         stats += f"silhouette history: {self.silhouette_history} \n"
         stats += f"Average Silhouette: {mean(self.silhouette_history)} \n"
+        stats += f"Average second half: \
+            {mean(self.silhouette_history[int(len(self.silhouette_history)/2):])} \n"
         return stats
 
     def get_silhouette_history(self):

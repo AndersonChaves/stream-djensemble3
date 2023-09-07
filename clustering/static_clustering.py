@@ -7,15 +7,16 @@ import time
 from config.config import Config
 import warnings
 import core.view as view
-
+import sys, os
 
 class StaticClustering():
     def __init__(self, target_dataset: np.ndarray, 
-                 embedding_method: str):
+                 embedding_method: str, n_clusters=[6]):
         self.target_dataset = target_dataset
         self.embedding_method = embedding_method
         self.embedding_strategy = create_embedding_strategy(
             target_dataset, embedding_method)
+        self.n_clusters = n_clusters
         self._initialize_parameters()        
         
     def run(self):
@@ -78,7 +79,7 @@ class StaticClustering():
         start = time.time()
         best_silhouete = -2
         kmeans_best_clustering = [0 for _ in range(len(self._embedding_matrix))]
-        for number_of_clusters in range(min_clusters, 5+1):
+        for number_of_clusters in self.n_clusters:#range(min_clusters, 5+1):
             kmeans = KMeans(n_clusters=number_of_clusters, random_state=0)
             kmeans_labels = kmeans.fit_predict(self._embedding_matrix)
             silhouette_avg = silhouette_score(self._embedding_matrix, kmeans_labels)

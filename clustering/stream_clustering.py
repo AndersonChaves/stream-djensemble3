@@ -10,9 +10,10 @@ logger = logging.getLogger(__name__)
 
 
 class StreamClustering():
-    def __init__(self, embedding_method, clustering_algorithm = "birch", n_clusters=3):
-        self._number_of_clusters = n_clusters
-        self.birch = Birch(branching_factor=100, n_clusters=self._number_of_clusters, threshold=10)
+    def __init__(self, embedding_method, 
+                 clustering_algorithm = "birch", n_clusters=[6]):
+        self._number_of_clusters = n_clusters[0]
+        self.birch = Birch(branching_factor=35, n_clusters=self._number_of_clusters, threshold=30)
         self.embedding_method = embedding_method
         self.embedding_strategy = None
         self.clustering_frame = None

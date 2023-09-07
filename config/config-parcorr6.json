@@ -1,10 +1,11 @@
 {   
-    "skip_list": [], 
+    "skip_list": ["B"], 
     "global_configuration": {
         "window_type": "tumbling",
         "window_size": 24,            
         "time_start": 0,
         "time_end": 1460,
+        "n_clusters": [3],
         "clustering":{
             "data_source": {
                 "dataset": "data/CFSR-2010-2015.nc",
@@ -16,7 +17,7 @@
                     "lon_max": 153
                 },
                 "time_range": [0, 1460],
-                "compacting_factor": 3
+                "compacting_factor": 10
             },        
             "embedding_method": "parcorr6"
         }
