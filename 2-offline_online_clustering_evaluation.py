@@ -3,7 +3,7 @@ from clustering.clustering_through_time import ClusteringThroughTime
 from config.config import Config
 import logging
 
-logging.root.setLevel(logging.ERROR)
+logging.root.setLevel(logging.DEBUG)
 
 def perform_experiment(configuration):
     print(f"Performing Clustering: Configuration {key}")
@@ -18,4 +18,6 @@ if __name__ == "__main__":
     for key, configuration in config.data["clustering_through_time"].items():
         if key in config.data["skip_list"]:
             continue
+        for gconfig, value in config.data["global_configuration"].items():
+            configuration[gconfig] = value
         perform_experiment(configuration)
