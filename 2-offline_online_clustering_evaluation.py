@@ -14,7 +14,7 @@ def perform_experiment(configuration, it_number):
     print(cls_through_time.get_statistics())
     print("---"*10)    
 
-    with open(f'r{it_number+1}.out', 'a') as f:
+    with open(f'r{it_number+1}.out', 'w') as f:
             f.write(cls_through_time.get_statistics())
 
     con = sqlite3.connect("exp2.db")
