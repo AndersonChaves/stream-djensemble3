@@ -1,7 +1,7 @@
 import core.djensemble 
 from core.config import Config
 import logging
-logging.root.setLevel(logging.INFO)
+logging.root.setLevel(logging.DEBUG)
 
 def perform_experiment(configuration):
     djensemble = core.djensemble.DJEnsemble(configuration)
