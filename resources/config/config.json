@@ -32,8 +32,8 @@
                 "min_purity_rate": 0.9         
             },
             "models": {
-                "convolutional_models_path": "resources/models/spatio-temporal/cfsr-all/",
-                "temporal_models_path": "resources/models/temporal/cfsr-all/",
+                "convolutional_models_path": "resources/models/single-model-for-tests/SPT/",
+                "temporal_models_path": "resources/models/single-model-for-tests/Temporal/",
                 "cost_estimation_function": {
                     "noise_level": 50,
                     "always_update": false
