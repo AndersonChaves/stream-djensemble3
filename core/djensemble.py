@@ -54,13 +54,19 @@ class DJEnsemble:
     def read_window(self):
         logger.info(f"Reading Window {self.t} to {self.t+self.config['window_size']}")
         self.data_window = self.ds.read_window(self.t, self.config["window_size"]+1)
-        self.t += 1
+        if self.config["window_type"] == "tumbling":
+            self.t += self.config["window_size"]
+        elif self.config["window_type"] == "sliding":
+            self.t += 1
+        else:
+            raise Exception("Error: Inform window type")
+
         if len(self.data_window) == self.config["window_size"]+1:
             return True
         elif len(self.data_window) <= self.config["window_size"]+1:
             return False
         else:
-            raise Exception("")
+            raise Exception("Error: Inform window size")
         
 
     def run_query(self):        
@@ -68,6 +74,9 @@ class DJEnsemble:
         self.continuous_query.run(
             input=self.data_window[:-1], true_output=self.data_window[-1])
         logger.info(self.continuous_query.get_statistics())        
+
+    def get_statistics(self):
+        return self.continuous_query.get_statistics()
 
     def update_error(self):
         self.continuous_query.update_error(self.data_window[-1])
