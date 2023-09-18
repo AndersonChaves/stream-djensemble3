@@ -17,7 +17,7 @@ class DJEnsemble:
         self.ds = DatasetManager(self.config["data_source"])        
         self.ds.loadDataset((self.config["time_start"], self.config["time_end"]))
         self.models_manager = ModelsManager(config["models"])
-        self.t = 0                
+        self.t = 0
 
     def run(self):
         self.run_offline()
@@ -52,6 +52,9 @@ class DJEnsemble:
             self.run_query()               
 
     def read_window(self):
+        if self.t + self.config["window_size"] > self.config["data_source"]["time_range"][1]:
+            return False
+        
         logger.info(f"Reading Window {self.t} to {self.t+self.config['window_size']}")
         self.data_window = self.ds.read_window(self.t, self.config["window_size"]+1)
         if self.config["window_type"] == "tumbling":
@@ -71,9 +74,14 @@ class DJEnsemble:
 
     def run_query(self):        
         logger.info("Running Query")
+        true_output = self.data_window[-1]
         self.continuous_query.run(
-            input=self.data_window[:-1], true_output=self.data_window[-1])
-        logger.info(self.continuous_query.get_statistics())        
+            input=self.data_window[:-1], true_output=true_output)
+        parent_directory = f"output/images/{self.config['config']}/"
+        title = f"t={self.t}-{self.t+self.config['window_size']}"
+        self.continuous_query._generate_visualization(
+            true_output, parent_directory, title)
+        logger.info(self.continuous_query.get_last_window_statistics())        
 
     def get_statistics(self):
         return self.continuous_query.get_statistics()
@@ -93,5 +101,10 @@ class DJEnsemble:
             f"   Tiling: {self.config['tiling']['strategy']}\n"
         return self.text
         
+    def error_history(self):
+        return self.continuous_query.rmse_history
+    
+    def time_history(self):
+        return self.continuous_query.time_history
 
 

@@ -1,7 +1,6 @@
-from config.config import Config
 import sqlite3
 
-con = sqlite3.connect("exp2.db")
+con = sqlite3.connect("exp3.db")
 cur = con.cursor()
 
 c_factor = 10
@@ -13,16 +12,18 @@ all_configurations = ['A']
 
 def print_parameter_results(configuration, parameter):
     
-    res = cur.execute(f"""SELECT parameter) 
+    res = cur.execute(f"""SELECT {parameter}
                       FROM exp3
                       WHERE configuration = '{configuration}' 
                       """).fetchall()
     parameter_sum = 0
+    param_len = 0
     for row in res:
-        row_average = sum(row[0]) / len(row[0])
+        param_list = [float(x) for x in row[0].strip('][').split(', ')]
+        param_len = len([float(x) for x in row[0].strip('][').split(', ')])
+        row_average = sum(param_list) / len(param_list)
         parameter_sum += row_average
-
-    print(f"{parameter}: {parameter_sum / len(row)}")
+    print(f"{parameter}: {parameter_sum / param_len}")
 
 def print_all_results():
     for config in all_configurations:

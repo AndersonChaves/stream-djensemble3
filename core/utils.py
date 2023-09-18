@@ -1,6 +1,10 @@
 import os, sys
 from os.path import exists
 import fnmatch
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 def create_directory_if_not_exists(path):
     if not os.path.exists(path):
@@ -54,3 +58,11 @@ def supress_log_messages(supress:bool):
             sys.stdout = null_device
         else:
             sys.stdout = original_stdout
+
+def measure_time_decorator(function):
+    def wrapper(*args, **kwargs):        
+        start = time.time()
+        function(*args)
+        interval = round(time.time() - start, 2)
+        logger.debug(f"--->{str(function.__name__)}: {interval}s")        
+    return wrapper

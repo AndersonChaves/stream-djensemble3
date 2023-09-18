@@ -6,8 +6,8 @@ from core.clustering import IClustering
 from .tile import Tile
 
 class Tiling():
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, config, query_start):
+        self.config = config        
 
     def run(self, clustering: IClustering, target_dataset):
                 
@@ -22,14 +22,17 @@ class Tiling():
 
         tiles = []
         for tile_id, value in self.tile_dict.items():            
-            start, end = value['start'], value['end']
+            start, end = value['start'], value['end']            
+
             if clustering.embedding_matrix is not None:
                 centroid_coord = calculate_centroid(clustering.embedding_matrix, start, end)                                
                 centroid_series = target_dataset[:, centroid_coord[0], centroid_coord[1]] 
             tiles.append(Tile(tile_id, (start, end), 
-                centroid_coord, centroid_series))
+                centroid_coord, centroid_series, offset=self.query_start))
         self.tiles = tiles        
 
+    def get_number_of_tiles(self):
+        return len(self.tiles)
 
 def expand_tile(tiling: np.array, clustering: np.array, start: tuple,
                 tile_id, max_impurity_rate = 0.05):

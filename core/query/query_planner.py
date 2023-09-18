@@ -29,6 +29,14 @@ class QueryPlanner():
             logger.debug("----Estimating error for tile "+ str(tile.id))                        
             error_estimative[tile] = self.rank_models_for_tile(
                   data_window, tile, candidate_models)
+            best_model = min(error_estimative[tile], key=error_estimative[tile].get)
+            logger.debug(f"    Best model is {best_model.model_name}")
+            #for key, value in error_estimative[tile].items():       
+            #    if value 
+            #    logger.debug(f"-------Model {key.model_name}: {value}")
+            #logger.debug(f"\n\n")
+            #if logger.isEnabledFor(logging.DEBUG):
+            #    input("Press Enter to continue...")
         return error_estimative
 
     def rank_models_for_tile(self, dataset,
@@ -62,6 +70,6 @@ class QueryPlanner():
         return temporal_models_names + convolutional_models_names    
 
     def get_data_from_tile(self, dataset: np.array, tile):
-        sx, sy = tile.get_start_coordinate()
-        ex, ey = tile.get_end_coordinate()
+        sx, sy = tile.get_start_relative_coordinate()
+        ex, ey = tile.get_end_relative_coordinate()
         return dataset[:, sx:ex+1, sy:ey+1]

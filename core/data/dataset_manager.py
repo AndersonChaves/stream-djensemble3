@@ -22,7 +22,7 @@ class DatasetManager:
         elif data_path[-4:] == '.npy':
             self.ds = np.load(data_path, mmap_mode='c')
             stride = self.config["compacting_factor"]
-            self.ds = self.ds[:, self.lat_min:self.lat_max:stride, 
+            self.ds = self.ds[self.start:self.end, self.lat_min:self.lat_max:stride, 
                 self.lon_min: self.lon_max:stride]
             self.accessor = AccessorNumpy()
         elif data_path[-3:] == '.nc':
@@ -77,3 +77,31 @@ class DatasetManager:
     def filter_frame_by_query_region(self, dataset, x1, x2):
         data_window = dataset[x1[0]:x2[0], x1[1]:x2[1]]
         return data_window
+
+
+def extend_dataset(x: int, y: int, data: np.array):
+    '''
+    Extends the dataset to a multiple of the specified spatial
+    coordinates x and y.
+
+    First it calculates ext, the size of the dimension that must be extended
+    so that the final size is multiple of the models input.
+    # Ex. mx=3, tx = 10: ceil(10/3)*3-10=4*3-10=2
+    Then duplicates the last column of the data to fit the models input size
+    # Ex. x y ===> x y y
+    #     z w      z w w
+
+    :param x: x target coordinate multiple
+    :param y: y target coordinate multiple
+    :param data: A dataset of shape (1, t, xref, yref, 1)
+    :return: Extended dataset
+    '''
+    while not (data.shape[2] % x == 0 and data.shape[3] % y == 0):
+        if data.shape[2] % x != 0:
+            ext_x = abs(math.ceil(data.shape[2] / x) * x - data.shape[2])
+            data = np.concatenate((data, data[:, :, -ext_x:, :, :]), axis=2)
+
+        if data.shape[3] % y != 0:
+            ext_y = abs(math.ceil(data.shape[3] / y) * y - data.shape[3])
+            data = np.concatenate((data, data[:, :, :, -ext_y:, :]), axis=3)
+    return data        
