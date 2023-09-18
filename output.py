@@ -16,6 +16,7 @@ def print_parameter_results(configuration, parameter):
                       FROM exp3
                       WHERE configuration = '{configuration}' 
                       """).fetchall()
+    #print("Res is: ", res)
     parameter_sum = 0
     param_len = 0
     for row in res:

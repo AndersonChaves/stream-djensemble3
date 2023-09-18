@@ -6,6 +6,7 @@ from core.models.models_manager import ModelsManager
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+VISUALIZATION = False
 
 class DJEnsemble:
     # --------------------------------------------------------------
@@ -79,8 +80,9 @@ class DJEnsemble:
             input=self.data_window[:-1], true_output=true_output)
         parent_directory = f"output/images/{self.config['config']}/"
         title = f"t={self.t}-{self.t+self.config['window_size']}"
-        self.continuous_query._generate_visualization(
-            true_output, parent_directory, title)
+        if VISUALIZATION:
+            self.continuous_query._generate_visualization(
+                true_output, parent_directory, title)
         logger.info(self.continuous_query.get_last_window_statistics())        
 
     def get_statistics(self):

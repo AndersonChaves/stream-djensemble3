@@ -7,6 +7,7 @@ from .tile import Tile
 
 class Tiling():
     def __init__(self, config, query_start):
+        self.query_start = query_start
         self.config = config        
 
     def run(self, clustering: IClustering, target_dataset):

@@ -40,11 +40,11 @@ def save_in_database(configuration, it_number, djensemble):
                 INSERT INTO exp3 VALUES ( 
                 {it_number}, 
                 '{configuration["config"]}', 
-                '{djensemble.get_parameters()}'
+                '{djensemble.get_parameters()}',
                 '{djensemble.error_history()}', 
-                '{sum(djensemble.error_history())/len(djensemble.error_history())}', 
-                '{sum(djensemble.time_history())/len(djensemble.time_history())}', 
-                '{djensemble.time_history()}'
+                {sum(djensemble.error_history())/len(djensemble.error_history())}, 
+                '{djensemble.time_history()}',
+                {sum(djensemble.time_history())/len(djensemble.time_history())} 
                 )"""
         )        
         con.commit()        

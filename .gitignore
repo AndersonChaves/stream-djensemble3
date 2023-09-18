@@ -1,3 +1,5 @@
+core/__pycache__/*
+*pycache*
 *.pyc
 bin/*
 images/*
@@ -9,3 +11,5 @@ share/*
 pyvenv.cfg
 resources/data/*
 resources/models/*
+output/images/*
+other-results/*
