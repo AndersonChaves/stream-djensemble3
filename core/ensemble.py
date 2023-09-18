@@ -24,9 +24,9 @@ class Ensemble():
             logger.debug(f"Tile {i} of {len(self.tile_data.keys())}")
             tile_data["prediction"] = self._get_tile_prediction(
                 tile, target_dataset)
+            logger.debug(f"--->Model {self.tile_data[tile]['best_model'].model_name}")
         self.ensemble_built = True
         
-
     def get_tiles(self):
         return [tile for tile in self.tile_data.keys()]
 

@@ -13,6 +13,8 @@ from core.clustering.embedding import get_gld_series_representation_from_dataset
 from core.tiling.tile import Tile
 from abc import ABC, abstractmethod
 from numpy.linalg import LinAlgError
+import time
+from core.utils import measure_time_decorator
 
 class Learner(ABC):
     model = None
@@ -98,7 +100,7 @@ class Learner(ABC):
         gld_list = np.reshape(gld_list, (lat, long, 4))  # Number of GLD parameters = 4
         print("Calculating Centroid...")
         return calculate_centroid(gld_list, (0, 0), (lat, long))
-
+    
     def compare_series_distances(self, s1, s2, dist_function="dtw"):
         # -. Identify the centroid time series C1 and C2 based on the resulting parameters
         # -. Determine the distance between C1 and C2 (e.g. using euclidian dist between vectors)
@@ -180,11 +182,21 @@ class Learner(ABC):
 
 
     def execute_eef(self, dataset, tile: Tile):
+        chk1 = time.time()
         s1 = self.get_reference_learner_series()
+        chk2 = time.time()
+        # print(f"1 time to get reference is {round(chk2 - chk1, 2)}")
         s2 = tile.get_centroid_series()
+        chk1, chk2 = chk2, time.time()
+        # print(f"2 time to get centroid is {round(chk2 - chk1, 2)}")
         x = self.compare_series_distances(s1, s2)
-        return self.r.predict(x)
-
+        chk1, chk2 = chk2, time.time()
+        # print(f"3 time to compare is {round(chk2 - chk1, 2)}")
+        prediction = self.r.predict(x)
+        chk1, chk2 = chk2, time.time()
+        # print(f"4 time to predict is {round(chk2 - chk1, 2)}")
+        return prediction
+    
     def get_reference_learner_series(self):
         reference_dataset = self.get_reference_dataset() # Reference model training dataset
         c1 = self.get_reference_dataset_centroid_coordinate()
@@ -223,7 +235,7 @@ class UnidimensionalLearner(Learner):
         for i in range(lat):
             for j in range(long):
                 input = target_dataset[:, i, j]
-                input = np.reshape(input, (10, 1))
+                input = np.reshape(input, (target_dataset[0], 1))
                 out = forecast_lstm(self.model, batch_size=1, X=input)
                 #out = self.invoke(input)
 
@@ -238,11 +250,11 @@ class UnidimensionalLearner(Learner):
 
         input = np.swapaxes(target_dataset, 0, 1)
         input = np.swapaxes(input, 1, 2)
-        input = np.reshape(input, (lat * long, 10, 1))
+        input = np.reshape(input, (lat * long, target_dataset.shape[0], 1))
         out = forecast_lstm(self.model, batch_size=len(input), X=input)
         for i in range(lat):
             for j in range(long):
-                output[:, i, j] = out[i * j]
+                output[:, i, j] = out[i * long + j]
         return output
 
 
@@ -304,7 +316,7 @@ def test_learner(op):
     print(y - yhat)
 
 def forecast_lstm(model, batch_size, X):
-    X = X.reshape(batch_size, 10, 1)
+    X = X.reshape(batch_size, X.shape[1], 1)
     yhat = model.predict(X, batch_size=batch_size)
     return yhat[:, 0]
 

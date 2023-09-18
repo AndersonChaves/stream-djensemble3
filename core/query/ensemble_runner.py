@@ -51,8 +51,8 @@ class EnsembleRunner():
                                 tile: Tile,
                                 tile_prediction: np.array):
 
-        tile_lat = [tile.get_start_coordinate()[0], tile.get_end_coordinate()[0]]
-        tile_long = [tile.get_start_coordinate()[1], tile.get_end_coordinate()[1]]
+        tile_lat = [tile.get_start_abs_coordinate()[0], tile.get_end_abs_coordinate()[0]]
+        tile_long = [tile.get_start_abs_coordinate()[1], tile.get_end_abs_coordinate()[1]]
 
         query_lat  = query_endpoints[0][0], query_endpoints[1][0]-1#query endpoints are always open interval, so -1
         query_long = query_endpoints[0][1], query_endpoints[1][1]-1 # If change this must change result declaration

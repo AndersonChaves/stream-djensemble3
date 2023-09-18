@@ -3,7 +3,8 @@ import matplotlib
 from PIL import Image
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
-from core.utils import create_directory_if_not_exists
+#from core.utils import create_directory_if_not_exists
+import seaborn as sns
 
 def print_array_screen(array_list, title_list = None, cmap_list=None):
     if isinstance(array_list, list):
@@ -21,6 +22,41 @@ def print_array_screen(array_list, title_list = None, cmap_list=None):
         #plt.imshow(array_list, cmap='gray', vmin=0, vmax=array_list[1].max())#, interpolation='nearest')
         plt.imshow(array_list, cmap='viridis', vmin=0, vmax=array_list[1].max())#, interpolation='nearest')
     plt.show()
+
+
+def save_array_list_as_image(array_list, file_name, title_list = None, cmap_list=None):
+    #create_directory_if_not_exists(parent_directory)
+
+    
+    f, axes = plt.subplots(1, len(array_list), figsize=(12, 6))
+    if len(array_list) == 1:
+        axes = [axes]
+    for i, ar in enumerate(array_list):
+        if array_list[0].shape[0] < 10:
+            sns.set(font_scale=1.0)
+        else:
+            sns.set(font_scale=0.3)
+        sns.heatmap(ar, annot=True, fmt='.1f', 
+            cmap='YlGnBu', cbar=False, square=True, ax=axes[i])
+        
+        sns.set(font_scale=1.0)
+        axes[i].set_xlabel('Lat', fontsize=12)
+        axes[i].set_ylabel('Lon', fontsize=12)
+        if title_list is not None:
+            axes[i].set_title(title_list[i])
+    plt.tight_layout()
+
+    # Save the figure to a file (e.g., PNG)
+    plt.savefig(file_name)
+
+    # Optionally, close the figure to release resources
+    plt.close()
+
+
+#ar = np.array([list(range(3)) for _ in range(3)])
+#save_array_list_as_image([ar, ar], "output.jpg", ["tiling", "tiling2"])
+#print("Teste")
+
 
 def save_figure_from_matrix(matrix : np.array, parent_directory: str, 
                             title: str, write_values=False,font_size=5):
