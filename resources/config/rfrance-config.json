@@ -16,12 +16,12 @@
         "B": {            
             "clustering":{                
                 "embedding_method": "parcorr6",
-                "type": "stream",
+                "type": "static",
                 "cluster_query_window": true,
                 "pre_clustering_window_size": 10
             },
             "tiling": {
-                "strategy": "quadtree",
+                "strategy": "yolo",
                 "min_purity_rate": 0.50         
             }                        
         }
@@ -30,10 +30,10 @@
         "window_size": 10,
         "window_type": "tumbling",
         "time_start": 0,
-        "time_end": 1460,            
+        "time_end": 100,            
         "query":{
-            "start": [62, 60],
-            "end": [82, 84]
+            "start": [0, 64],
+            "end": [0, 64]
         },
         "data_source": {
             "dataset": "resources/data/radar-2016-0to17275.npy",
@@ -45,11 +45,11 @@
                 "lon_max": 128
             },
             "time_range": [0, 17276],
-            "compacting_factor": 3
+            "compacting_factor": 16
         },
         "models": {
-            "convolutional_models_path": "resources/models/rfrance/spatio-temporal/",
-            "temporal_models_path": "resources/models/rfrance/temporal/",
+            "convolutional_models_path": "resources/models/rfrance/spatio-temporal/all_models/",
+            "temporal_models_path": "resources/models/rfrance/temporal/all_models/",
             "cost_estimation_function": {
                 "noise_level": 50,
                 "always_update": false

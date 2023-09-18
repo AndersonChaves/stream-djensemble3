@@ -132,6 +132,6 @@ class ModelsManager():
         noise_level_for_cef = self.config["cost_estimation_function"]["noise_level"]
         update_models_cef = self.config["cost_estimation_function"]["always_update"] == True
         for learner in self.get_models():
-            logger.debug(f"Updating CEF for model {learner}")
+            logger.debug(f"Updating CEF for model {learner.model_name}")
             learner.update_cef(noise_level_for_cef, update_models_cef=update_models_cef)
         ut.supress_log_messages(False)

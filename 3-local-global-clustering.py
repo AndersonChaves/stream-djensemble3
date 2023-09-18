@@ -64,9 +64,13 @@ def perform_experiment(configuration, it_number):
 if __name__ == "__main__":
     config = Config(f"resources/config/{CONFIG_FILE}")
     for key, configuration in config.data["djensemble"].items():
-       print(f"Performing DJEnsemble: Configuration {key}")
+       if key in config.data["skip_list"]:
+           print(f"Skipping Configuration {key}")  
+           continue
+        else:
+           print(f"Performing DJEnsemble: Configuration {key}")
        configuration["config"] = key
        for gconfig, value in config.data["global_configuration"].items():
-            configuration[gconfig] = value
+           configuration[gconfig] = value
        for it_number in range(0, MAX_ITERATIONS):
-            perform_experiment(configuration, it_number)       
+           perform_experiment(configuration, it_number)       
