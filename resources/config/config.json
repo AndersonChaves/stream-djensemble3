@@ -23,7 +23,7 @@
                     "lon_max": 153
                 },
                 "time_range": [0, 1460],
-                "compacting_factor": 3
+                "compacting_factor": 1
             },
             "clustering":{                
                 "embedding_method": "parcorr6",
@@ -33,7 +33,7 @@
             },
             "tiling": {
                 "strategy": "yolo",
-                "min_purity_rate": 0.50         
+                "min_purity_rate": 0.50
             },
             "models": {
                 "convolutional_models_path": "resources/models/cfsr/spatio-temporal/all-models/",
@@ -63,11 +63,91 @@
                     "lon_max": 153
                 },
                 "time_range": [0, 1460],
-                "compacting_factor": 3
+                "compacting_factor": 1
+            },
+            "clustering":{                
+                "embedding_method": "parcorr6",
+                "type": "static",
+                "cluster_query_window": true,
+                "pre_clustering_window_size": 10
+            },
+            "tiling": {
+                "strategy": "yolo",
+                "min_purity_rate": 0.50
+            },
+            "models": {
+                "convolutional_models_path": "resources/models/cfsr/spatio-temporal/all-models/",
+                "temporal_models_path": "resources/models/cfsr/temporal/all-models/",
+                "cost_estimation_function": {
+                    "noise_level": 50,
+                    "always_update": false
+                }                
+            }            
+        },        
+        "C": {
+            "window_size": 10,
+            "window_type": "tumbling",
+            "time_start": 0,
+            "time_end": 1460,            
+            "query":{
+                "start": [62, 60],
+                "end": [82, 84]
+            },
+            "data_source": {
+                "dataset": "resources/data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460],
+                "compacting_factor": 1
             },
             "clustering":{                
                 "embedding_method": "parcorr6",
                 "type": "stream",
+                "cluster_query_window": true,
+                "pre_clustering_window_size": 10
+            },
+            "tiling": {
+                "strategy": "quadtree",
+                "min_purity_rate": 0.50
+            },
+            "models": {
+                "convolutional_models_path": "resources/models/cfsr/spatio-temporal/all-models/",
+                "temporal_models_path": "resources/models/cfsr/temporal/all-models/",
+                "cost_estimation_function": {
+                    "noise_level": 50,
+                    "always_update": false
+                }                
+            }            
+        },      
+        "D": {
+            "window_size": 10,
+            "window_type": "tumbling",
+            "time_start": 0,
+            "time_end": 1460,            
+            "query":{
+                "start": [62, 60],
+                "end": [82, 84]
+            },
+            "data_source": {
+                "dataset": "resources/data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460],
+                "compacting_factor": 1
+            },
+            "clustering":{                
+                "embedding_method": "parcorr6",
+                "type": "static",
                 "cluster_query_window": true,
                 "pre_clustering_window_size": 10
             },

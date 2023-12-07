@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 
 class ContinuousQuery():
     def __init__(self, config: dict):                
-        self.config = config                
+        self.config = config        
+        self.ensemble_history = []        
+        self.number_of_tiles_history = []
         self.rmse_history = []
         self.time_history = []
 
@@ -47,7 +49,9 @@ class ContinuousQuery():
         self._define_ensemble()
         self._execute_ensemble()
         self.time_history.append(time.time() - start_time)
-        self._update_error(true_output)        
+        self.number_of_tiles_history.append(self.tiling.get_number_of_tiles())
+        self.ensemble_history.append(self.ensemble.get_ensemble())
+        self._update_error(true_output)
 
     def _extract_query_window(self, data_window: np.ndarray):
         start = self._get_query_start_after_compacting()
@@ -125,6 +129,7 @@ class ContinuousQuery():
         self.text += \
             f"Average RMSE: {str(sum(self.rmse_history) / len(self.rmse_history))}\n"
         self.text += f"Last window execution time: {self.time_history[-1]}\n"
+        self.text += f"Las window Number of Tiles: {self.tiling.get_number_of_tiles()}\n"        
         return self.text
     
     def get_statistics(self):

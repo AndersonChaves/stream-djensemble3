@@ -30,6 +30,19 @@ class Ensemble():
     def get_tiles(self):
         return [tile for tile in self.tile_data.keys()]
 
+    def get_ensemble(self):
+        ensemble = [(tile.id, self.tile_data[tile]["best_model"].model_name.replace("'", "*").replace(",", "*")) 
+                  for tile in  self.get_tiles()]        
+        return ensemble
+    
+
+    def get_number_of_models(self):
+        list_of_models = []
+        for _, model in self.get_ensemble():
+            if model not in list_of_models:
+                list_of_models.append(model)
+        return len(list(set(list_of_models)))
+
     def get_tile_predicted_frame(self, tile):
         self._check_ensemble_built()
         return self.tile_data[tile]["prediction"]
