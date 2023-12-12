@@ -8,6 +8,20 @@ from config.config import Config
 import warnings
 import sys, os
 import core.view as view
+import logging
+
+
+# pyclustering kmeans
+from pyclustering.cluster.kmeans import kmeans as py_clustering_kmeans
+from pyclustering.utils.metric import distance_metric
+from pyclustering.cluster.center_initializer import random_center_initializer
+from pyclustering.cluster.encoder import type_encoding
+from pyclustering.cluster.encoder import cluster_encoder
+from clustering import silhouette_score_dtw
+
+
+from clustering.custom_silhouette import calculate_silhouette
+from clustering.custom_silhouette import calculate_silhouette_pyclustering
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -81,8 +95,9 @@ class StaticClustering():
         else: 
             logger.debug("Generating embedding")
             self._embedding_matrix = self.embedding_strategy.iterate(self.target_dataset)        
-            ut.create_directory_if_not_exists(dir_name)
-            np.save(full_file_name, self._embedding_matrix)
+            if self.config['embedding_method'] != "dtw":
+                ut.create_directory_if_not_exists(dir_name)
+                np.save(full_file_name, self._embedding_matrix)
         self._embedding_time = time.time() - start
     
     def _cluster(self, min_clusters=3):        
@@ -90,9 +105,22 @@ class StaticClustering():
         best_silhouete = -2
         kmeans_best_clustering = [0 for _ in range(len(self._embedding_matrix))]
         for number_of_clusters in range(min_clusters, 5+1):
-            kmeans = KMeans(n_clusters=number_of_clusters, random_state=0)
-            kmeans_labels = kmeans.fit_predict(self._embedding_matrix)
-            silhouette_avg = silhouette_score(self._embedding_matrix, kmeans_labels)
+            if self.embedding_method == "dtw":
+                X = silhouette_score_dtw.convert_matrix_of_time_series_to_list(
+                    self._embedding_matrix)
+                kmeans_clusters, kmeans_labels = self.cluster_using_dtw(
+                    X = X,
+                    n_clusters = number_of_clusters
+                )
+                metric = silhouette_score_dtw.distance_dtw
+
+                silhouette_avg = calculate_silhouette_pyclustering(
+                   X, kmeans_clusters, metric)
+
+            else:
+                kmeans = KMeans(n_clusters=number_of_clusters, random_state=0)
+                kmeans_labels = kmeans.fit_predict(self._embedding_matrix)
+                silhouette_avg = silhouette_score(self._embedding_matrix, kmeans_labels)
             if silhouette_avg > best_silhouete:
                 kmeans_best_clustering = kmeans_labels
                 best_silhouete = silhouette_avg
@@ -101,6 +129,20 @@ class StaticClustering():
         self._clustering_matrix = kmeans_best_clustering
         self._silhouette = best_silhouete
         
+    def cluster_using_dtw(self, X, n_clusters):                
+        initial_centers = random_center_initializer(
+            X, n_clusters, random_state=5).initialize()
+        
+        kmeans_instance = py_clustering_kmeans(
+            X, initial_centers, n_clusters=n_clusters, random_state=10)        
+        kmeans_instance.process()
+        segments = kmeans_instance.get_clusters();
+
+        # centroids = km_model.cluster_centers_ 
+        labels = silhouette_score_dtw.generate_labels_from_cluster_lists(segments)
+        labels = np.array(labels)
+        return segments, labels
+
     @property
     def silhouette(self):
         self._check_clustering()

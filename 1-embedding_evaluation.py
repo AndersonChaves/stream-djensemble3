@@ -9,10 +9,12 @@ logger = logging.getLogger(__name__)
 
 
 config_file = "embedding_evaluation.json"
-number_of_runs = 2
+number_of_runs = 1
 
-def run_experiment(config, it_number):    
+def run_experiment(config, it_number):        
     for key, cls_configuration in config.data["clustering"].items():
+        if key in config.data["skip_list"]:
+            continue
         static_clustering = StaticClustering(cls_configuration)
         static_clustering.set_cache(it_number)
         static_clustering.run()

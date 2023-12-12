@@ -1,6 +1,7 @@
 {    
+    "skip_list" : ["A", "B", "C", "D", "E", "F"],
     "clustering": {
-        "A":{
+        "F":{
             "data_source": {
                 "dataset": "data/CFSR-2015.nc",
                 "target_attribute": "TMP_L100",
@@ -14,6 +15,36 @@
             },        
             "type": "static",
             "embedding_method": "gld"
+        },
+        "G":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 10]
+            },        
+            "type": "static",
+            "embedding_method": "dtw"
+        },
+        "A":{
+            "data_source": {
+                "dataset": "data/CFSR-2015.nc",
+                "target_attribute": "TMP_L100",
+                "subregion": {
+                    "lat_min": 0,
+                    "lat_max": 141,
+                    "lon_min": 0,
+                    "lon_max": 153
+                },
+                "time_range": [0, 1460]
+            },        
+            "type": "static",
+            "embedding_method": "parcorr2"
         },
         "B":{
             "data_source": {

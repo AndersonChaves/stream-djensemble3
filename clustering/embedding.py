@@ -1,7 +1,10 @@
 import numpy as np
 import core.utils as ut
-from clustering.gld import *
-from clustering.parcorr import *
+from clustering.embedding_method.gld import *
+from clustering.embedding_method.parcorr import *
+from clustering.embedding_method.dtw import *
+
+import logging
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -12,6 +15,8 @@ def create_embedding_strategy(data, embedding_strategy_name):
     elif embedding_strategy_name.startswith("parcorr"):
         basis_size = int(embedding_strategy_name[7:])        
         return ParcorrStrategy(basis_size=basis_size, series_size = data.shape[0])
+    elif embedding_strategy_name.startswith("dtw"):
+        return DTWStrategy()
     else:
         raise Exception("Clustering Method chosen has not been implemented")
 
