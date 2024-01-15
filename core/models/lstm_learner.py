@@ -49,13 +49,14 @@ class LstmLearner(UnidimensionalLearner):
             train_scaled, scaler = supervised_values, None
 
         # fit the model
+        print("...Fitting")
         lstm_model = mt.fit_lstm(train_scaled, batch_size=self.batch_size, nb_epoch=self.nb_epochs,
                               neurons=self.neurons, is_stateful=self.train_as_stateful,
                                  number_of_hidden_layers=self.number_of_hidden_layers)
 
         if self.train_as_stateful:
             train_reshaped = train_scaled[:, 0].reshape(len(train_scaled), 1, 1)
-            lstm_model.predict(train_reshaped, batch_size=1)
+            lstm_model.predict(train_reshaped, batch_size=10)
         self.model = lstm_model
 
     def predict(self, raw_testing_series, series_size, 
