@@ -31,7 +31,7 @@ def train_model(ds, pattern, region):
                         j_start: (j_start+1) *1]
     print("Training Models")
     model = train_lstm(model_name = pattern + str(region), 
-                numpy_training_data=training_ds)
+                numpy_training_data=training_ds, retrain=True)
     # Test
     print("Predicting Error")
     error = model.predict(testing_ds, series_size=24)
@@ -43,8 +43,8 @@ def train_lstm(model_name, numpy_training_data, retrain=False):
     lstm_model = LstmLearner(models_dir, model_name, auto_loading=True)
 
     if not lstm_model.model_file_exists() or retrain:
-        lstm_model.update_architecture(neurons=16, nb_epochs=1,
-            batch_size=100, number_of_hidden_layers=2)
+        lstm_model.update_architecture(neurons=4, nb_epochs=100,
+            batch_size=100, number_of_hidden_layers=1)
         lstm_model.train(numpy_training_data, series_size)
         lstm_model.save()
     return lstm_model

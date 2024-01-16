@@ -82,3 +82,7 @@ def generate_spatio_temporal_dataset():
     # Reorder the dataset to shape (time, lat, lon)
     data = np.transpose(data, (2, 0, 1))
     return data
+
+def generate_spatio_temporal_differences_dataset():
+    ds = generate_spatio_temporal_dataset()
+    return np.diff(ds, axis=0, prepend=0)
