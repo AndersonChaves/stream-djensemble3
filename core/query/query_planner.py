@@ -2,8 +2,9 @@ import numpy as np
 import core.utils as ut
 from core.tiling.tiling import Tiling
 from core.tiling.tile import Tile
-from core.ensemble import Ensemble
+from core.ensemble import Ensemble, AverageEnsemble
 from core.models.models_manager import ModelsManager
+from random import randint
 
 import logging
 
@@ -15,11 +16,32 @@ class QueryPlanner():
         self.config = config
 
     def define_ensemble(self, tiling: Tiling, 
-                        candidate_models, data_window: np.ndarray) -> Ensemble:
-
+                        candidate_models: list, data_window: np.ndarray) -> Ensemble:
+        if self.config.get("use_average_ensemble", False):
+            return self.get_average_ensemble(tiling, candidate_models)
+        
+        if self.config.get("use_random_allocation", False):
+            return self.get_random_ensemble(tiling, candidate_models)
+        
         error_estimative = self.get_error_estimative(
             tiling, data_window, candidate_models)
         ensemble = self.get_lower_cost_combination(error_estimative)
+        return ensemble
+
+    def get_random_ensemble(self, tiling: Tiling, candidate_models: list):
+        ensemble = Ensemble()
+        for tile in tiling.tiles:
+            random_id = randint(0, len(candidate_models)-1)
+            selected_model = candidate_models[random_id]
+            print(f"Model for tile {tile.id} is {candidate_models[random_id].model_name}")
+            ensemble.add_item(tile, selected_model, -1)
+        return ensemble
+
+    def get_average_ensemble(self, tiling: Tiling, candidate_models: list):
+        ensemble = AverageEnsemble()
+        for tile in tiling.tiles:
+            selected_model = candidate_models
+            ensemble.add_item(tile, selected_model, -1)
         return ensemble
 
     def get_error_estimative(self, tiling: Tiling, 

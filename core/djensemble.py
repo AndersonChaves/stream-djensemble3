@@ -89,7 +89,7 @@ class DJEnsemble:
         return self.continuous_query.get_statistics()
 
     def update_error(self):
-        self.continuous_query.update_error(self.data_window[-1])
+        self.continuous_query._update_error(self.data_window[-1])
 
     def get_parameters(self):
         self.text = f"Parameters:"

@@ -4,14 +4,15 @@ import logging
 import sqlite3
 
 logging.root.setLevel(logging.DEBUG)
-CONFIG_FILE = "config.json"
+#CONFIG_FILE = "config-query-2-baseline.json"
+CONFIG_FILE = "query-2/config-query-2-general.json"
 
-WRITE_TO_FILE = True
+WRITE_TO_FILE = False
 WRITE_TO_DATABASE = True
 MAX_ITERATIONS = 5
 
-
-def save_in_database(configuration, it_number, djensemble):
+def save_in_database(configuration, it_number, djensemble, database_file):
+    DATABASE_FILE = database_file
     print("Writing in files")
     if WRITE_TO_FILE:
         with open(f'output/files/r{it_number+1}-{configuration["config"]}.out', 'w') as f:
@@ -21,7 +22,7 @@ def save_in_database(configuration, it_number, djensemble):
     print("Writing to database")
     if not WRITE_TO_DATABASE:
         return
-    con = sqlite3.connect("exp3.db")
+    con = sqlite3.connect(DATABASE_FILE)
     cur = con.cursor()
     try:
         cur.execute("""
@@ -56,21 +57,37 @@ def save_in_database(configuration, it_number, djensemble):
         print(f"Could not insert into database iteration {it_number}")
         print(e)
 
-def perform_experiment(configuration, it_number):
+def perform_experiment(configuration, it_number, database_file):
     djensemble = core.djensemble.DJEnsemble(configuration)
     print(djensemble.get_parameters())
     djensemble.run()
     print(djensemble.get_statistics())
     print("---"*10)    
 
-    save_in_database(configuration, it_number, djensemble)
+    save_in_database(configuration, it_number, djensemble, database_file)
 
 if __name__ == "__main__":
     config = Config(f"resources/config/{CONFIG_FILE}")
+    
+    DATABASE_FILE = config.data.get("database_file", "default.db")
+
     for key, configuration in config.data["djensemble"].items():
+
+       # Checking Skip list
+       if key in config.data["skip_list"]:
+           continue
        print(f"Performing DJEnsemble: Configuration {key}")
-       configuration["config"] = key
+       configuration["config"] = key       
+
+       # Checking Global Configurations
        for gconfig, value in config.data["global_configuration"].items():
-            configuration[gconfig] = value
+            if gconfig == "min_purity_rate":
+                configuration["tiling"][gconfig] = value
+            elif gconfig == "compacting_factor":
+                configuration["data_source"][gconfig] = value
+            else:
+                configuration[gconfig] = value
+
+       # Performing Experiments
        for it_number in range(0, MAX_ITERATIONS):
-            perform_experiment(configuration, it_number)       
+            perform_experiment(configuration, it_number, DATABASE_FILE)       

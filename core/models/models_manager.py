@@ -26,7 +26,7 @@ class ModelsManager():
         self.convolutional_models = []
         self.config = config
         self.conv_models_path = config["convolutional_models_path"]
-        self.temp_models_path = config["temporal_models_path"]        
+        self.temp_models_path = config.get("temporal_models_path", "")
         self.include_convolutional_models_from_directory(self.conv_models_path)
         self.include_temporal_models_from_directory(self.temp_models_path)
         self.load_models()
@@ -40,6 +40,8 @@ class ModelsManager():
         
     def load_all_temporal_models(self):
         model_list = []
+        if self.temp_models_path == "":
+            return []
         for file in os.listdir(self.temp_models_path):
             if file.endswith(".h5"):
                 model_name = file[:-3]

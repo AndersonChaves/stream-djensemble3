@@ -1,10 +1,12 @@
 import numpy as np
 
 class QuadTree:
-    def __init__(self, data, min_purity, cur_depth=0, max_depth=4):
+    def __init__(self, data, min_purity, cur_depth=0, 
+                    minimum_depth = 0, max_depth=0):
         self.min_purity = min_purity
         self.max_depth  = max_depth
         self.cur_depth  = cur_depth
+        self.min_depth  = minimum_depth
         self.data = data
 
         if self.is_partitionable():
@@ -17,10 +19,14 @@ class QuadTree:
             self.is_leaf = True
 
     def is_partitionable(self):
-        if (self.calculate_purity() < self.min_purity) and \
-           (self.cur_depth+1 <= self.max_depth) and \
-           (len(self.data) >= 2) and \
-           (len(self.data[0]) >= 2):
+        if (len(self.data) < 2):
+            return False
+        if (len(self.data[0]) < 2):
+            return False
+        if (self.cur_depth+1 > self.max_depth):
+            return False
+        if (self.cur_depth < self.min_depth or \
+            (self.calculate_purity() < self.min_purity)):
             return True
         else:
             return False

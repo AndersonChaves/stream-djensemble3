@@ -1,0 +1,60 @@
+{   
+    "skip_list": [], 
+    "djensemble" : {
+        "A": {
+            "clustering":{                
+                "embedding_method": "parcorr6",
+                "type": "stream",
+                "cluster_query_window": true,
+                "pre_clustering_window_size": 10
+            },
+            "tiling": {
+                "strategy": "yolo",
+                "min_purity_rate": 0.50         
+            }
+        },
+        "B": {            
+            "clustering":{                
+                "embedding_method": "parcorr6",
+                "type": "stream",
+                "cluster_query_window": true,
+                "pre_clustering_window_size": 10
+            },
+            "tiling": {
+                "strategy": "quadtree",
+                "min_purity_rate": 0.50         
+            }                        
+        }
+    },
+    "global_configuration": {
+        "window_size": 10,
+        "window_type": "tumbling",
+        "time_start": 0,
+        "time_end": 1460,            
+        "query":{
+            "start": [62, 60],
+            "end": [82, 84]
+        },
+        "data_source": {
+            "dataset": "resources/data/radar-2016-0to17275.npy",
+            "target_attribute": "TMP_L100",
+            "subregion": {
+                "lat_min": 0,
+                "lat_max": 128,
+                "lon_min": 0,
+                "lon_max": 128
+            },
+            "time_range": [0, 17276],
+            "compacting_factor": 3
+        },
+        "models": {
+            "convolutional_models_path": "resources/models/rfrance/spatio-temporal/",
+            "temporal_models_path": "resources/models/rfrance/temporal/",
+            "cost_estimation_function": {
+                "noise_level": 50,
+                "always_update": false
+            }                
+        }
+    }    
+}        
+

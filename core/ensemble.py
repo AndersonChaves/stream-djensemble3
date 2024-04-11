@@ -14,7 +14,7 @@ class Ensemble():
 
     def add_item(self, tile, model, error_estimative):
         self.tile_data[tile] = {"best_model": model, 
-                                "best_error": error_estimative}        
+                                "best_error": error_estimative}
 
     def run(self, target_dataset):   
         logger.info("Performing Predictions...")
@@ -73,3 +73,39 @@ class Ensemble():
             sys.stdout = null_device
         else:
             sys.stdout = self.original_stdout
+
+class AverageEnsemble(Ensemble):
+    def add_item(self, tile: Tile, candidate_models: list, error_estimative: float):
+        self.tile_data[tile] = {"best_model_set": candidate_models, 
+                                "best_error": error_estimative}
+    
+    def run(self, target_dataset):   
+        logger.info("Performing Predictions...")
+        i = 0
+        for tile, tile_data in self.tile_data.items():
+            i += 1
+            logger.debug(f"Tile {i} of {len(self.tile_data.keys())}")
+            tile_data["prediction"] = self._get_tile_prediction(
+                tile, target_dataset)
+            #logger.debug(f"--->Model {self.tile_data[tile]['best_model_set'].model_name}")
+        self.ensemble_built = True
+
+    def _get_tile_prediction(self, tile, target_dataset):        
+        self._supress_log_messages("on")
+        candidate_models = self.tile_data[tile]["best_model_set"]
+        predictions = []
+        for model in candidate_models:
+            predictions.append(self._perform_prediction(target_dataset, model, tile))
+        
+        # Average all predictions
+        averaged_prediction = predictions[0] * (1 / len(predictions))
+        for pred in predictions[1:]:
+            averaged_prediction += pred * (1 / len(predictions))
+
+        self._supress_log_messages("off")
+        return averaged_prediction
+
+    def get_ensemble(self):        
+        ensemble = [(tile.id, "average_ensemble") for tile in  self.get_tiles()]        
+        return ensemble
+    

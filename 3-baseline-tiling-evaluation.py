@@ -23,7 +23,7 @@ def save_in_database(configuration, it_number, djensemble, description=""):
     print("Writing to database")
     if not WRITE_TO_DATABASE:
         return
-    con = sqlite3.connect("exp3-baseline-temporal.db")
+    con = sqlite3.connect("exp3-q2-baseline-temporal.db")
     cur = con.cursor()
     try:
         cur.execute("""
@@ -88,12 +88,12 @@ def perform_single_model_experiment(configuration, it_number):
         perform_experiment(configuration, it_number, description=model)
         ut.remove_directory(temp_directory)
 
-    # for model in convolutional_models:
-    #     temp_directory = create_directory_with_single_model(model, convolutional_models_path)
-    #     configuration["models"]["temporal_models_path"] = "/"
-    #     configuration["models"]["convolutional_models_path"] = temp_directory
-    #     perform_experiment(configuration, it_number, description=model)
-    #     ut.remove_directory(temp_directory)
+    for model in convolutional_models:
+        temp_directory = create_directory_with_single_model(model, convolutional_models_path)
+        configuration["models"]["temporal_models_path"] = "/"
+        configuration["models"]["convolutional_models_path"] = temp_directory
+        perform_experiment(configuration, it_number, description=model)
+        ut.remove_directory(temp_directory)
         
 
 if __name__ == "__main__":

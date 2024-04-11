@@ -38,7 +38,7 @@
             "name": "Exp Entrypoint",
             "type": "python",
             "request": "launch",
-            "program": "3-local-global-clustering.py",
+            "program": "3-tiling-evaluation.py",
             "console": "integratedTerminal",
             "justMyCode": false
         }

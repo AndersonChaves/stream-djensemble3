@@ -13,12 +13,16 @@ class ConvolutionalModelInvoker:
             target_dataset, model.temporal_length, 1)
 
         predicted_frame_series = forecast_conv_lstm(model.model, len(X), X)
+        yhat = predicted_frame_series[:, -1, :, :]
         y = np.reshape(y, (len(y), *y.shape[-2:]))
-        region_rmse = tf.sqrt(
-            tf.math.reduce_mean(
-                tf.losses.mean_squared_error(predicted_frame_series, y)
-            )
-        )
+
+        mean_loss = (np.square(y - yhat)).mean()
+        region_rmse = np.sqrt(mean_loss)
+
+        #mean_loss = tf.math.reduce_mean(
+        #    tf.losses.mean_squared_error(yhat, y)
+        #)
+        #region_rmse = tf.sqrt(mean_loss)
         average_rmse = region_rmse
 
         return average_rmse

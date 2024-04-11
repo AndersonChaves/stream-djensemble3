@@ -13,3 +13,4 @@ resources/data/*
 resources/models/*
 output/images/*
 other-results/*
+output/*

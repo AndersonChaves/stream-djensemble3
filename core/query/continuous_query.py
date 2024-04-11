@@ -34,10 +34,17 @@ class ContinuousQuery():
             self.tiling = Tiling(self.config["tiling"], 
                             self.config["query"]["start"])
             self.tiling.run(self.clustering, pre_clustering_window)        
-        else:
+        elif self.config["clustering"]["type"] in ["stream"]:
             self.clustering = StreamClustering(
                 self.config["clustering"]["embedding_method"])
-            self.clustering.initialize(pre_clustering_window)        
+            self.clustering.initialize(pre_clustering_window)
+        elif self.config["clustering"]["type"] in ["no_clustering"]:
+            data_shape = pre_clustering_window.shape[1:]
+            
+            # Todo: Implement Clustering            
+            self.tiling = Tiling(self.config["tiling"], 
+                            self.config["query"]["start"])
+            self.tiling.run(self.clustering, pre_clustering_window)
         self.candidate_models = candidate_models
 
     #----Online-----------------------------------------------------------------
@@ -83,7 +90,7 @@ class ContinuousQuery():
         if self.config["clustering"]["type"] == "stream":
             self.clustering.update(self.input)
         elif self.config["clustering"]["type"] == "dynamic":
-            self.clustering = StaticClustering(self.input, 
+            self.clustering = StaticClustering(self.input,
                 self.config["clustering"]["embedding_method"])
             self.clustering.run()
     
