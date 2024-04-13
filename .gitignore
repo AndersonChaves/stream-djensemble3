@@ -14,3 +14,4 @@ resources/models/*
 output/images/*
 other-results/*
 output/*
+unversioned_files/*
