@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, shutil
 from os.path import exists
 import fnmatch
 import time
@@ -22,12 +22,21 @@ def get_names_of_models_in_dir(models_path):
         models[i] = m.split('.h5')[0]
     return models
 
-def list_all_files_in_dir(path, extension=''):
+def list_all_files_in_dir(path, extension='', prefix=""):
     res = []
     for file in os.listdir(path):
-        if file.endswith(extension) or file.endswith('.' + extension):
+        if (file.endswith(extension) or file.endswith('.' + extension)) and \
+          file.startswith(prefix) and os.path.isfile(path + file):
             res.append(file)
     return(res)
+
+def remove_directory(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)        
+    shutil.rmtree(directory)
+
 
 def file_exists(path_to_file):
     return exists(path_to_file)

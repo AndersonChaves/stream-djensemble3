@@ -20,6 +20,9 @@ class Tiling():
             self.tiling_frame, self.tile_dict = create_quadtree_tiling(
                 clustering.clustering_matrix, self.config["min_purity_rate"]
             )
+        elif self.config["strategy"] == "single_tile":
+            self.tiling_frame, self.tile_dict = create_single_tiling(
+                clustering.clustering_matrix)
 
         tiles = []
         for tile_id, value in self.tile_dict.items():            
@@ -175,11 +178,18 @@ def create_yolo_tiling(clustering: np.array, min_purity_rate: int):
         x += 1
     return tiling, tile_dict
 
-def create_quadtree_tiling(clustering: np.array, min_purity_rate):
-    quadtree = QuadTree(clustering, min_purity=min_purity_rate)
+def create_quadtree_tiling(clustering: np.array, min_purity_rate, min_depth=1):
+    quadtree = QuadTree(clustering, min_purity=min_purity_rate, minimum_depth=min_depth)
     tiling = quadtree.get_all_quadrants()
     tiling_dict = quadtree.get_all_quadrant_limits()
     return tiling, tiling_dict
+
+def create_single_tiling(clustering: np.array):
+    quadtree = QuadTree(clustering, min_purity=0, minimum_depth=0, max_depth=0)
+    tiling = quadtree.get_all_quadrants()
+    tiling_dict = quadtree.get_all_quadrant_limits()
+    return tiling, tiling_dict
+
 
 def calculate_centroid(clustering, start, end):
     tile_embedd = clustering[start[0]:end[0]+1, start[1]:end[1]+1]

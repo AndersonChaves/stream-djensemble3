@@ -50,7 +50,7 @@ class DJEnsemble:
 
     def run_online(self):        
         while(self.read_window()):
-            self.run_query()               
+            self.run_query()             
 
     def read_window(self):
         if self.t + self.config["window_size"] > self.config["data_source"]["time_range"][1]:
@@ -89,7 +89,7 @@ class DJEnsemble:
         return self.continuous_query.get_statistics()
 
     def update_error(self):
-        self.continuous_query.update_error(self.data_window[-1])
+        self.continuous_query._update_error(self.data_window[-1])
 
     def get_parameters(self):
         self.text = f"Parameters:"
@@ -109,4 +109,8 @@ class DJEnsemble:
     def time_history(self):
         return self.continuous_query.time_history
 
+    def ensemble_history(self):
+        return self.continuous_query.ensemble_history
 
+    def number_of_tiles_history(self):
+        return self.continuous_query.number_of_tiles_history
