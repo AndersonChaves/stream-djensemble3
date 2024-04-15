@@ -1,0 +1,97 @@
+import numpy as np
+import core.utils as ut
+from core.tiling.tiling import Tiling
+from core.tiling.tile import Tile
+from core.ensemble import Ensemble, AverageEnsemble
+from core.models.models_manager import ModelsManager
+from random import randint
+
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+class QueryPlanner():
+    def __init__(self, config):
+        self.config = config
+
+    def define_ensemble(self, tiling: Tiling, 
+                        candidate_models: list, data_window: np.ndarray) -> Ensemble:
+        if self.config.get("use_average_ensemble", False):
+            return self.get_average_ensemble(tiling, candidate_models)
+        
+        if self.config.get("use_random_allocation", False):
+            return self.get_random_ensemble(tiling, candidate_models)
+        
+        error_estimative = self.get_error_estimative(
+            tiling, data_window, candidate_models)
+        ensemble = self.get_lower_cost_combination(error_estimative)
+        return ensemble
+
+    def get_random_ensemble(self, tiling: Tiling, candidate_models: list):
+        ensemble = Ensemble()
+        for tile in tiling.tiles:
+            random_id = randint(0, len(candidate_models)-1)
+            selected_model = candidate_models[random_id]
+            print(f"Model for tile {tile.id} is {candidate_models[random_id].model_name}")
+            ensemble.add_item(tile, selected_model, -1)
+        return ensemble
+
+    def get_average_ensemble(self, tiling: Tiling, candidate_models: list):
+        ensemble = AverageEnsemble()
+        for tile in tiling.tiles:
+            selected_model = candidate_models
+            ensemble.add_item(tile, selected_model, -1)
+        return ensemble
+
+    def get_error_estimative(self, tiling: Tiling, 
+                             data_window, candidate_models):
+        error_estimative = {}
+        for tile in tiling.tiles:
+            logger.debug("----Estimating error for tile "+ str(tile.id))                        
+            error_estimative[tile] = self.rank_models_for_tile(
+                  data_window, tile, candidate_models)
+            best_model = min(error_estimative[tile], key=error_estimative[tile].get)
+            logger.debug(f"    Best model is {best_model.model_name}")
+            #for key, value in error_estimative[tile].items():       
+            #    if value 
+            #    logger.debug(f"-------Model {key.model_name}: {value}")
+            #logger.debug(f"\n\n")
+            #if logger.isEnabledFor(logging.DEBUG):
+            #    input("Press Enter to continue...")
+        return error_estimative
+
+    def rank_models_for_tile(self, dataset,
+                                    tile: Tile, candidate_models):
+        error_estimative = {}
+        data_from_tile_region = self.get_data_from_tile(dataset, tile)
+        for learner in candidate_models:
+            error_est = learner.execute_eef(data_from_tile_region, tile)
+            if error_est < 0:
+                raise(Exception("Error - Cef Value is negative"))
+            error_estimative[learner] = error_est
+        return error_estimative
+
+
+    def get_lower_cost_combination(self, error_estimative):
+        ensemble = Ensemble()
+        for tile_id in error_estimative.keys():
+            best_model, best_error = None, float('inf')
+            for model, error in error_estimative[tile_id].items():
+                if error < best_error:
+                    best_model = model
+                    best_error = error                    
+            ensemble.add_item(tile_id, best_model, best_error)
+        return ensemble    
+
+    def get_candidate_models_list(self):
+        self.temporal_models_path = self.config["temporal_models_path"]
+        self.convolutional_models_path = self.config["convolutional_models_path"]
+        temporal_models_names = ut.get_names_of_models_in_dir(self.temporal_models_path)
+        convolutional_models_names = ut.get_names_of_models_in_dir(self.convolutional_models_path)
+        return temporal_models_names + convolutional_models_names    
+
+    def get_data_from_tile(self, dataset: np.array, tile):
+        sx, sy = tile.get_start_relative_coordinate()
+        ex, ey = tile.get_end_relative_coordinate()
+        return dataset[:, sx:ex+1, sy:ey+1]

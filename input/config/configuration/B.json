@@ -1,0 +1,17 @@
+ {
+    "label": "B",
+    "window_size": 10,
+    "window_type": "tumbling",
+    "time_start": 0,
+    "time_end": 1460,                            
+    "clustering":{                
+        "embedding_method": "parcorr6",
+        "type": "static",
+        "cluster_query_window": true,
+        "pre_clustering_window_size": 10
+    },
+    "tiling": {
+        "strategy": "yolo",
+        "min_purity_rate": 0.80
+    }    
+}
