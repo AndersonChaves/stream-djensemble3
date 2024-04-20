@@ -2,7 +2,7 @@ import numpy as np
 
 class QuadTree:
     def __init__(self, data, min_purity, cur_depth=0, 
-                    minimum_depth = 0, max_depth=0):
+                    minimum_depth = 1, max_depth=0):
         self.min_purity = min_purity
         self.max_depth  = max_depth
         self.cur_depth  = cur_depth

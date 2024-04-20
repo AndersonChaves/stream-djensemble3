@@ -178,7 +178,7 @@ def create_yolo_tiling(clustering: np.array, min_purity_rate: int):
         x += 1
     return tiling, tile_dict
 
-def create_quadtree_tiling(clustering: np.array, min_purity_rate, min_depth=1):
+def create_quadtree_tiling(clustering: np.array, min_purity_rate, min_depth):
     quadtree = QuadTree(clustering, min_purity=min_purity_rate, minimum_depth=min_depth)
     tiling = quadtree.get_all_quadrants()
     tiling_dict = quadtree.get_all_quadrant_limits()

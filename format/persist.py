@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 
 def save_in_database(configuration, it_number, djensemble, database_file):
     save_raw_data(configuration, it_number, djensemble, database_file)        
@@ -126,27 +127,84 @@ def save_average_all_iterations(database_file):
                             configuration, 
                             average_error, 
                             average_time, 
-                            average_n_tiles
+                            average_n_tiles,
+                            sum_winner_error,
+                            sum_winner_time,
+                            sum_winner_n_tiles                    
                     )
         """)
     except:
         print("Could not create table exp_condensed")
 
     # Populate exp_condensed table with average values
-    cur.execute("""
-    INSERT INTO exp_condensed (iteration, configuration, average_error, average_time, average_n_tiles)
-    SELECT iteration, configuration, AVG(error) as average_error, AVG(time) as average_time, AVG(n_tiles) as average_n_tiles
-    FROM exp
-    GROUP BY iteration, configuration
-    """)
-
-    # Commit changes and close connection
-    conn.commit()
+    try:
+        cur.execute("""
+        INSERT INTO exp_condensed (iteration, configuration, average_error, 
+                    average_time, average_n_tiles, 
+                    sum_winner_error, 
+                    sum_winner_time, 
+                    sum_winner_n_tiles)
+        SELECT iteration, configuration, 
+                    AVG(error) as average_error, 
+                    AVG(time) as average_time, 
+                    AVG(n_tiles) as average_n_tiles, 
+                    SUM(winner_error) AS sum_winner_error, 
+                    SUM(winner_time) AS sum_winner_time, 
+                    SUM(winner_n_tiles) AS sum_winner_n_tiles
+        FROM exp
+        GROUP BY iteration, configuration
+        """)
+        # Commit changes and close connection
+        conn.commit()        
+    except :
+        raise        
     conn.close()
 
+def update_configuration_names(database_file):
+    conn = sqlite3.connect(database_file)
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='A-stream+yolo' 
+        WHERE configuration ='A'
+        """)
 
-if __name__ == "__main__":
-    database_file = "Q1.db"
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='B-static+yolo' WHERE configuration ='B'
+        """)
+
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='C-stream+qtree' WHERE configuration ='C'
+        """)
+
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='D-static+qtree' WHERE configuration ='D'
+        """)
+
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='E-dynamic+yolo' WHERE configuration ='E'
+        """)
+
+        cur.execute("""
+        UPDATE exp_condensed
+        SET configuration='F-dynamic+qtree' WHERE configuration ='F'
+        """)        
+        
+        # Commit changes and close connection
+        conn.commit()        
+    except :
+        raise        
+    conn.close()
+
+if __name__ == "__main__":    
+    print("Start")
+    database_file = sys.argv[1]
     update_winners(database_file)
     save_average_all_iterations(database_file)
+    update_configuration_names(database_file)
     

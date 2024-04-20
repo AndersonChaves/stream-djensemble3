@@ -1,5 +1,5 @@
 {   
-    "queries": "input/config/queries.json",
+    "queries": "input/config/queries-2015.json",
     "skip_list": [], 
     "database_file": "exp.db",
     "global_configuration": {
@@ -14,7 +14,7 @@
                 "lon_min": 0,
                 "lon_max": 153
             },
-            "time_range": [0, 20],
+            "time_range": [0, 1460],
             "compacting_factor": 1
         },
         "models": {
