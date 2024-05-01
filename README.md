@@ -1,2 +1,3 @@
 # stream-djensemble3
-Repository for new version of stream djensemble, started in jun-2023
+Repository for StreamEnsemble, a method for Predictive Queries over Spatiotemporal
+Streaming Data. Please check each branch for the code of each experiment. 
